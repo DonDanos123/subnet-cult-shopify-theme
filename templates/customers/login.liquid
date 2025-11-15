@@ -1,1 +1,111 @@
+```liquid
 
+  
+  
+    
+    
+      LOGIN
+    
+
+    {% form 'customer_login' %}
+      
+      {% if form.errors %}
+        
+          ERROR: {{ form.errors | default_errors }}
+        
+      {% endif %}
+
+      
+        
+        
+          EMAIL: *
+          
+        
+
+        
+          PASSWORD: *
+          
+        
+
+        
+          
+            FORGOT_PASSWORD?
+          
+        
+
+        
+          LOGIN
+        
+
+        
+          DON'T HAVE AN ACCOUNT?
+          
+            CREATE_ACCOUNT
+          
+        
+
+      
+    {% endform %}
+
+    
+    
+      
+        RESET_PASSWORD
+      
+
+      {% form 'recover_customer_password' %}
+        
+        {% if form.posted_successfully? %}
+          
+            We've sent you an email with a link to update your password.
+          
+        {% endif %}
+
+        {% if form.errors %}
+          
+            {{ form.errors | default_errors }}
+          
+        {% endif %}
+
+        
+          
+          
+            EMAIL: *
+            
+          
+
+          
+            SUBMIT
+          
+
+          
+            
+              ← BACK_TO_LOGIN
+            
+          
+
+        
+      {% endform %}
+    
+
+  
+
+
+
+
+  function showRecoverForm() {
+    document.getElementById('recoverForm').style.display = 'block';
+    document.querySelector('form[action*="customer_login"]').parentElement.style.display = 'none';
+  }
+
+  function hideRecoverForm() {
+    document.getElementById('recoverForm').style.display = 'none';
+    document.querySelector('form[action*="customer_login"]').parentElement.style.display = 'block';
+  }
+
+  // Show recover form if hash is present
+  if (window.location.hash === '#recover') {
+    showRecoverForm();
+  }
+
+```
