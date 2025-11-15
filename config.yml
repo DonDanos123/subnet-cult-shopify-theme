@@ -1,1 +1,9 @@
+```yaml
+development:
+  password: ""
+  theme_id: ""
+  store: your-store.myshopify.com
+  ignore_files:
+    - config/settings_data.json
+```
 
