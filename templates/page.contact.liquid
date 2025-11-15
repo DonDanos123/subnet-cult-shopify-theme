@@ -1,1 +1,82 @@
+```liquid
+
+  
+  
+    
+    
+    
+      {{ page.title | upcase }}
+      
+        > SEND_US_A_MESSAGE
+      
+    
+
+    {% if form.posted_successfully? %}
+      
+        ✓ MESSAGE_RECEIVED
+        We'll get back to you soon.
+      
+    {% endif %}
+
+    {% form 'contact' %}
+      {% if form.errors %}
+        
+          ERROR: Please check the following:
+          {{ form.errors | default_errors }}
+        
+      {% endif %}
+
+      
+        
+        
+        
+          
+            NAME: *
+          
+          
+        
+
+        
+        
+          
+            EMAIL: *
+          
+          
+        
+
+        
+        
+          
+            PHONE:
+          
+          
+        
+
+        
+        
+          
+            MESSAGE: *
+          
+          
+        
+
+        
+        
+          SEND_MESSAGE
+        
+
+      
+    {% endform %}
+
+    
+    {% if page.content != blank %}
+      
+        {{ page.content }}
+      
+    {% endif %}
+
+  
+
+
+```
 
