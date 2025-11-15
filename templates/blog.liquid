@@ -1,1 +1,82 @@
+```liquid
 
+  
+  
+  
+    {{ blog.title | upcase }}
+    {% if blog.all_tags.size > 0 %}
+      
+        
+          ALL
+        
+        {% for tag in blog.all_tags %}
+          
+            {{ tag | upcase }}
+          
+        {% endfor %}
+      
+    {% endif %}
+  
+
+  
+  {% if blog.articles.size > 0 %}
+    
+      {% for article in blog.articles %}
+        
+          
+          {% if article.image %}
+            
+              
+            
+          {% endif %}
+
+          
+            {{ article.published_at | date: '%B %d, %Y' }} | BY {{ article.author | upcase }}
+          
+
+          
+            
+              {{ article.title }}
+            
+          
+
+          
+            {{ article.excerpt_or_content | strip_html | truncate: 150 }}
+          
+
+          
+            READ_MORE →
+          
+
+        
+      {% endfor %}
+    
+
+    
+    {% paginate blog.articles by 9 %}
+      {% if paginate.pages > 1 %}
+        
+          {% if paginate.previous %}
+            ← PREV
+          {% endif %}
+
+          
+            PAGE {{ paginate.current_page }} OF {{ paginate.pages }}
+          
+
+          {% if paginate.next %}
+            NEXT →
+          {% endif %}
+        
+      {% endif %}
+    {% endpaginate %}
+
+  {% else %}
+    
+      NO_ARTICLES_FOUND
+      Check back soon for updates.
+    
+  {% endif %}
+
+
+```
