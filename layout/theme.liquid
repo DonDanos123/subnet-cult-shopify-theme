@@ -1,1 +1,29 @@
+```liquid
+
+
+
+  
+  
+  {{ page_title }} - SUBNET CULT
+  
+  
+  
+  {{ content_for_header }}
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+
+  
+  
+  {% section 'header' %}
+  
+  
+    {{ content_for_layout }}
+  
+  
+  {% section 'footer' %}
+  
+  {{ 'theme.js' | asset_url | script_tag }}
+
+
+```
 
