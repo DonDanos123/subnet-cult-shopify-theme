@@ -1,26 +1,107 @@
-```liquid
+<div class="main-content">
+  
+  <!-- Collection Header -->
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <h1 class="section-title">{{ collection.title | upcase }}</h1>
+    {% if collection.description != blank %}
+      <p style="opacity: 0.8; max-width: 800px; margin: 1rem auto;">
+        > {{ collection.description }}
+      </p>
+    {% endif %}
+  </div>
 
-  
-    [ {{ collection.title | upcase }} ]
-  
-  
-  {% if collection.description != blank %}
+  <!-- Filter/Sort Section -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; padding: 1rem; border: 1px solid var(--terminal-border); background: rgba(0,255,65,0.05);">
+    <div>
+      <span style="opacity: 0.7;">PRODUCTS_FOUND: </span>
+      <span style="font-weight: bold;">{{ collection.products.size }}</span>
+    </div>
     
-      {{ collection.description }}
-    
-  {% endif %}
-  
-  
-    {% for product in collection.products %}
-      {% render 'product-card', product: product %}
-    {% endfor %}
-  
-  
-  {% if collection.products.size == 0 %}
-    
-      NO PRODUCTS FOUND
-      CHECK BACK SOON FOR NEW DROPS
-    
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <label for="sortBy" style="opacity: 0.7;">SORT_BY:</label>
+      <select id="sortBy" onchange="location.href=this.value" style="background: var(--terminal-bg); color: var(--terminal-text); border: 1px solid var(--terminal-border); padding: 0.5rem; font-family: 'Courier New', monospace;">
+        <option value="?sort_by=manual">FEATURED</option>
+        <option value="?sort_by=best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>BEST_SELLING</option>
+        <option value="?sort_by=title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>A-Z</option>
+        <option value="?sort_by=title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>Z-A</option>
+        <option value="?sort_by=price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>PRICE_LOW_TO_HIGH</option>
+        <option value="?sort_by=price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>PRICE_HIGH_TO_LOW</option>
+        <option value="?sort_by=created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>NEWEST</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  {% if collection.products.size > 0 %}
+    <div class="product-grid">
+      {% for product in collection.products %}
+        <div class="product-card">
+          <a href="{{ product.url }}">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title | escape }}" class="product-image">
+            {% else %}
+              <div class="product-image" style="background: rgba(0,255,65,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                [NO_IMAGE]
+              </div>
+            {% endif %}
+            
+            <h3 class="product-title">{{ product.title }}</h3>
+            
+            <div class="product-price">
+              {% if product.compare_at_price > product.price %}
+                <span style="text-decoration: line-through; opacity: 0.6;">{{ product.compare_at_price | money }}</span>
+                <span style="margin-left: 0.5rem;">{{ product.price | money }}</span>
+              {% else %}
+                {{ product.price | money }}
+              {% endif %}
+            </div>
+          </a>
+          
+          {% if product.available %}
+            <form action="/cart/add" method="post">
+              <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+              <button type="submit" class="cta-button" style="width: 100%;">ADD_TO_CART</button>
+            </form>
+          {% else %}
+            <button class="cta-button" style="width: 100%; opacity: 0.5; cursor: not-allowed;" disabled>
+              OUT_OF_STOCK
+            </button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if paginate.pages > 1 %}
+      <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--terminal-border);">
+        {% if paginate.previous %}
+          <a href="{{ paginate.previous.url }}" class="cta-button">← PREV</a>
+        {% else %}
+          <span class="cta-button" style="opacity: 0.3; cursor: not-allowed;">← PREV</span>
+        {% endif %}
+
+        <span style="opacity: 0.8;">
+          PAGE {{ paginate.current_page }} OF {{ paginate.pages }}
+        </span>
+
+        {% if paginate.next %}
+          <a href="{{ paginate.next.url }}" class="cta-button">NEXT →</a>
+        {% else %}
+          <span class="cta-button" style="opacity: 0.3; cursor: not-allowed;">NEXT →</span>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div style="text-align: center; padding: 4rem; border: 1px solid var(--terminal-border); background: rgba(0,255,65,0.05);">
+      <p style="font-size: 1.5rem; margin-bottom: 1rem;">NO_PRODUCTS_FOUND</p>
+      <p style="opacity: 0.7; margin-bottom: 2rem;">This collection is currently empty.</p>
+      <a href="/" class="cta-button">RETURN_HOME</a>
+    </div>
   {% endif %}
 
-```
+</div>
+
+{% paginate collection.products by 12 %}
+  <!-- Pagination wrapper (handled above) -->
+{% endpaginate %}
