@@ -1,1 +1,69 @@
 
+```liquid
+
+  {{ section.settings.text | upcase }}
+
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Announcement Text",
+      "default": "FREE SHIPPING ON ORDERS OVER $50"
+    }
+  ]
+}
+{% endschema %}
+```
+
+### 18. `sections/newsletter.liquid`
+
+```liquid
+
+  
+    [ {{ section.settings.heading | default: "JOIN_THE_NETWORK" | upcase }} ]
+  
+  
+  
+    {{ section.settings.subheading | default: "Subscribe to receive updates, access to exclusive deals, and more." }}
+  
+
+  {% form 'customer', class: 'newsletter-form' %}
+    
+    
+      
+      
+        SUBSCRIBE
+      
+    
+  {% endform %}
+
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "JOIN_THE_NETWORK"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Subscribe to receive updates, access to exclusive deals, and more."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}
+```
