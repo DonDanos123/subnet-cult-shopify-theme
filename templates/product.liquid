@@ -1,48 +1,221 @@
-```liquid
-
+<div class="main-content">
   
+  <!-- Breadcrumb -->
+  <div style="margin-bottom: 2rem; opacity: 0.7;">
+    <a href="/" style="color: var(--terminal-text); text-decoration: none;">HOME</a>
+    <span> / </span>
+    {% if collection %}
+      <a href="{{ collection.url }}" style="color: var(--terminal-text); text-decoration: none;">{{ collection.title | upcase }}</a>
+      <span> / </span>
+    {% endif %}
+    <span>{{ product.title | upcase }}</span>
+  </div>
+
+  <!-- Product Section -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 4rem;">
     
-      {% if product.featured_image %}
-        
+    <!-- Product Images -->
+    <div>
+      <div id="mainImage" style="border: 2px solid var(--terminal-border); background: rgba(0,255,65,0.05); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; overflow: hidden;">
+        {% if product.featured_image %}
+          <img src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.title | escape }}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9) contrast(1.1);">
+        {% else %}
+          <span style="font-size: 3rem; opacity: 0.5;">[NO_IMAGE]</span>
+        {% endif %}
+      </div>
+      
+      <!-- Thumbnail Gallery -->
+      {% if product.images.size > 1 %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.5rem;">
+          {% for image in product.images %}
+            <div onclick="changeImage('{{ image | img_url: 'master' }}')" style="border: 1px solid var(--terminal-border); aspect-ratio: 1; cursor: pointer; overflow: hidden; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--terminal-text)'" onmouseout="this.style.borderColor='var(--terminal-border)'">
+              <img src="{{ image | img_url: 'small' }}" alt="{{ product.title | escape }}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+          {% endfor %}
+        </div>
       {% endif %}
-    
-    
-    
-      {{ product.title }}
-      
-        {{ product.price | money }}
-      
-      
-      
-        {{ product.description }}
-      
-      
-      
+    </div>
+
+    <!-- Product Info -->
+    <div>
+      <h1 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 0 0 10px var(--terminal-text);">
+        {{ product.title | upcase }}
+      </h1>
+
+      <div style="font-size: 1.8rem; margin-bottom: 2rem; padding: 1rem; border: 1px solid var(--terminal-border); background: rgba(0,255,65,0.05);">
+        {% if product.compare_at_price > product.price %}
+          <span style="text-decoration: line-through; opacity: 0.6; font-size: 1.2rem;">{{ product.compare_at_price | money }}</span>
+          <span style="margin-left: 1rem;">{{ product.price | money }}</span>
+          <span style="display: block; margin-top: 0.5rem; font-size: 0.9rem; color: #ff0000;">
+            SAVE {{ product.compare_at_price | minus: product.price | money }}
+          </span>
+        {% else %}
+          {{ product.price | money }}
+        {% endif %}
+      </div>
+
+      {% if product.description != blank %}
+        <div style="margin-bottom: 2rem; opacity: 0.9; line-height: 1.8;">
+          <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">[ DESCRIPTION ]</h3>
+          {{ product.description }}
+        </div>
+      {% endif %}
+
+      <!-- Product Form -->
+      <form action="/cart/add" method="post" id="productForm">
         
-        
+        <!-- Variants -->
         {% unless product.has_only_default_variant %}
-          
-            SELECT VARIANT:
-            
-              {% for variant in product.variants %}
-                
-                  {{ variant.title }} - {{ variant.price | money }}
-                
-              {% endfor %}
-            
-          
+          {% for option in product.options_with_values %}
+            <div style="margin-bottom: 1.5rem;">
+              <label style="display: block; margin-bottom: 0.5rem; opacity: 0.7;">
+                {{ option.name | upcase }}:
+              </label>
+              <select name="options[{{ option.name }}]" class="variant-select" style="width: 100%; padding: 0.8rem; background: var(--terminal-bg); color: var(--terminal-text); border: 1px solid var(--terminal-border); font-family: 'Courier New', monospace; font-size: 1rem;">
+                {% for value in option.values %}
+                  <option value="{{ value | escape }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endfor %}
         {% endunless %}
-        
-        
-          {% if product.available %}
-            [ ADD TO CART ]
-          {% else %}
-            [ SOLD OUT ]
-          {% endif %}
-        
-      
+
+        <!-- Quantity -->
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; opacity: 0.7;">
+            QUANTITY:
+          </label>
+          <input type="number" name="quantity" value="1" min="1" style="width: 100%; padding: 0.8rem; background: var(--terminal-bg); color: var(--terminal-text); border: 1px solid var(--terminal-border); font-family: 'Courier New', monospace; font-size: 1rem;">
+        </div>
+
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+        <!-- Add to Cart Button -->
+        {% if product.available %}
+          <button type="submit" class="cta-button" style="width: 100%; padding: 1.2rem; font-size: 1.1rem; margin-bottom: 1rem;">
+            ADD_TO_CART
+          </button>
+        {% else %}
+          <button type="button" class="cta-button" style="width: 100%; padding: 1.2rem; font-size: 1.1rem; opacity: 0.5; cursor: not-allowed;" disabled>
+            OUT_OF_STOCK
+          </button>
+        {% endif %}
+
+        <!-- Buy Now Button -->
+        {% if product.available %}
+          <button type="button" onclick="buyNow()" class="cta-button" style="width: 100%; padding: 1.2rem; font-size: 1.1rem; background: var(--terminal-text); color: var(--terminal-bg);">
+            BUY_NOW
+          </button>
+        {% endif %}
+      </form>
+
+      <!-- Product Meta -->
+      <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--terminal-border); opacity: 0.7; font-size: 0.9rem;">
+        {% if product.vendor != blank %}
+          <p style="margin-bottom: 0.5rem;">VENDOR: {{ product.vendor | upcase }}</p>
+        {% endif %}
+        {% if product.type != blank %}
+          <p style="margin-bottom: 0.5rem;">TYPE: {{ product.type | upcase }}</p>
+        {% endif %}
+        <p>SKU: {{ product.selected_or_first_available_variant.sku | default: 'N/A' }}</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  {% if recommendations.products.size > 0 %}
+    <section style="border-top: 2px solid var(--terminal-border); padding-top: 4rem;">
+      <h2 class="section-title">RELATED_PRODUCTS</h2>
+      <div class="product-grid">
+        {% for product in recommendations.products limit: 4 %}
+          <div class="product-card">
+            <a href="{{ product.url }}">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title | escape }}" class="product-image">
+              {% else %}
+                <div class="product-image" style="background: rgba(0,255,65,0.1); display: flex; align-items: center; justify-content: center;">
+                  [NO_IMAGE]
+                </div>
+              {% endif %}
+              <h3 class="product-title">{{ product.title }}</h3>
+              <p class="product-price">{{ product.price | money }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</div>
+
+<script>
+  function changeImage(imageUrl) {
+    const mainImage = document.querySelector('#mainImage img');
+    if (mainImage) {
+      mainImage.src = imageUrl;
+    }
+  }
+
+  function buyNow() {
+    const form = document.getElementById('productForm');
+    const formData = new FormData(form);
     
-  
+    fetch('/cart/add.js', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      window.location.href = '/cart';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
 
-```
+  // Variant selection logic
+  const variantSelects = document.querySelectorAll('.variant-select');
+  variantSelects.forEach(select => {
+    select.addEventListener('change', updateVariant);
+  });
 
+  function updateVariant() {
+    // Get all selected options
+    const selectedOptions = Array.from(variantSelects).map(select => select.value);
+    
+    // Find matching variant
+    const variants = {{ product.variants | json }};
+    const matchingVariant = variants.find(variant => {
+      return selectedOptions.every((option, index) => {
+        return variant.options[index] === option;
+      });
+    });
+
+    if (matchingVariant) {
+      document.querySelector('input[name="id"]').value = matchingVariant.id;
+      
+      // Update availability
+      const addToCartBtn = document.querySelector('button[type="submit"]');
+      if (matchingVariant.available) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.style.opacity = '1';
+        addToCartBtn.style.cursor = 'pointer';
+        addToCartBtn.textContent = 'ADD_TO_CART';
+      } else {
+        addToCartBtn.disabled = true;
+        addToCartBtn.style.opacity = '0.5';
+        addToCartBtn.style.cursor = 'not-allowed';
+        addToCartBtn.textContent = 'OUT_OF_STOCK';
+      }
+    }
+  }
+</script>
+
+<style>
+  @media (max-width: 768px) {
+    .main-content > div:first-of-type {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
