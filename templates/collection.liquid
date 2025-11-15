@@ -1,1 +1,26 @@
+```liquid
 
+  
+    [ {{ collection.title | upcase }} ]
+  
+  
+  {% if collection.description != blank %}
+    
+      {{ collection.description }}
+    
+  {% endif %}
+  
+  
+    {% for product in collection.products %}
+      {% render 'product-card', product: product %}
+    {% endfor %}
+  
+  
+  {% if collection.products.size == 0 %}
+    
+      NO PRODUCTS FOUND
+      CHECK BACK SOON FOR NEW DROPS
+    
+  {% endif %}
+
+```
