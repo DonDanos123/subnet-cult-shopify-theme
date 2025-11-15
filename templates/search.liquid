@@ -1,1 +1,109 @@
+```liquid
 
+  
+  
+  
+    SEARCH_RESULTS
+    
+    
+    
+      
+        
+        
+          SEARCH
+        
+      
+    
+  
+
+  {% if search.performed %}
+    
+    
+    
+      {% if search.results_count > 0 %}
+        FOUND {{ search.results_count }} RESULT{% if search.results_count != 1 %}S{% endif %} FOR "{{ search.terms | upcase }}"
+      {% else %}
+        NO_RESULTS_FOUND FOR "{{ search.terms | upcase }}"
+      {% endif %}
+    
+
+    
+    {% if search.results_count > 0 %}
+      
+        {% for item in search.results %}
+          {% case item.object_type %}
+            {% when 'product' %}
+              
+                
+                  {% if item.featured_image %}
+                    
+                  {% else %}
+                    
+                      [NO_IMAGE]
+                    
+                  {% endif %}
+                  {{ item.title }}
+                  {{ item.price | money }}
+                
+                {% if item.available %}
+                  
+                    
+                    ADD_TO_CART
+                  
+                {% else %}
+                  OUT_OF_STOCK
+                {% endif %}
+              
+
+            {% when 'article' %}
+              
+                ARTICLE
+                
+                  {{ item.title }}
+                
+                {{ item.excerpt_or_content | strip_html | truncate: 100 }}
+              
+
+            {% when 'page' %}
+              
+                PAGE
+                
+                  {{ item.title }}
+                
+                {{ item.content | strip_html | truncate: 100 }}
+              
+          {% endcase %}
+        {% endfor %}
+      
+
+      
+      {% paginate search.results by 12 %}
+        {% if paginate.pages > 1 %}
+          
+            {% if paginate.previous %}
+              ← PREV
+            {% endif %}
+            PAGE {{ paginate.current_page }} OF {{ paginate.pages }}
+            {% if paginate.next %}
+              NEXT →
+            {% endif %}
+          
+        {% endif %}
+      {% endpaginate %}
+
+    {% else %}
+      
+        NO_MATCHES_FOUND
+        Try different keywords or browse our collections.
+        BROWSE_ALL_PRODUCTS
+      
+    {% endif %}
+
+  {% else %}
+    
+      Enter a search term above to find products, articles, and pages.
+    
+  {% endif %}
+
+
+```
