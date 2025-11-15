@@ -1,1 +1,114 @@
+```liquid
 
+  
+  
+    
+    
+      MY_ACCOUNT
+      Welcome back, {{ customer.first_name | upcase }}
+    
+
+    
+      
+      
+      
+        
+          [ ACCOUNT_INFO ]
+        
+        
+        
+          NAME:
+          {{ customer.name }}
+        
+
+        
+          EMAIL:
+          {{ customer.email }}
+        
+
+        
+          MANAGE_ADDRESSES
+        
+
+        
+          LOGOUT
+        
+      
+
+      
+      
+        
+          [ ORDER_HISTORY ]
+        
+
+        {% if customer.orders.size > 0 %}
+          
+            
+            
+            
+              ORDER
+              DATE
+              STATUS
+              TOTAL
+            
+
+            
+            {% for order in customer.orders %}
+              
+                
+                  
+                    #{{ order.name }}
+                  
+                
+                
+                  {{ order.created_at | date: '%b %d, %Y' }}
+                
+                
+                  
+                    {{ order.financial_status_label | upcase }}
+                  
+                
+                
+                  {{ order.total_price | money }}
+                
+              
+            {% endfor %}
+
+          
+
+          {% if customer.orders.size >= 10 %}
+            
+              Showing recent orders only
+            
+          {% endif %}
+
+        {% else %}
+          
+            NO_ORDERS_YET
+            You haven't placed any orders yet.
+            
+              START_SHOPPING
+            
+          
+        {% endif %}
+
+      
+
+    
+
+  
+
+
+
+
+  @media (max-width: 968px) {
+    .main-content > div > div:first-child {
+      grid-template-columns: 1fr !important;
+    }
+
+    .main-content > div > div > div > div {
+      grid-template-columns: 60px 1fr !important;
+    }
+  }
+
+```
