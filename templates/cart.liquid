@@ -1,1 +1,73 @@
+```liquid
+
+  
+    [ SHOPPING CART ]
+  
+  
+  {% if cart.item_count == 0 %}
+    
+      YOUR CART IS EMPTY
+      START YOUR REBELLION. ADD SOME ITEMS.
+      BROWSE PRODUCTS
+    
+  {% else %}
+    
+      {% for item in cart.items %}
+        
+          
+            {% if item.image %}
+              
+            {% endif %}
+            
+              {{ item.product.title }}
+              {{ item.variant.title }}
+              {{ item.price | money }}
+            
+          
+          
+          
+            
+              -
+              {{ item.quantity }}
+              +
+            
+            {{ item.line_price | money }}
+            ✕
+          
+        
+      {% endfor %}
+      
+      
+        
+          TOTAL:
+          {{ cart.total_price | money }}
+        
+        
+          [ PROCEED TO CHECKOUT ]
+        
+      
+    
+  {% endif %}
+
+
+
+document.querySelectorAll('.quantity-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const key = this.dataset.id;
+    const change = parseInt(this.dataset.change);
+    const currentQty = parseInt(this.parentElement.querySelector('span').textContent);
+    const newQty = currentQty + change;
+    
+    if (newQty >= 0) {
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: key, quantity: newQty})
+      })
+      .then(() => location.reload());
+    }
+  });
+});
+
+```
 
