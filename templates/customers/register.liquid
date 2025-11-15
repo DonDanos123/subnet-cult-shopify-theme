@@ -1,1 +1,59 @@
+```liquid
+
+  
+  
+    
+    
+      CREATE_ACCOUNT
+    
+
+    {% form 'create_customer' %}
+      
+      {% if form.errors %}
+        
+          ERROR: Please fix the following:
+          {{ form.errors | default_errors }}
+        
+      {% endif %}
+
+      
+        
+        
+          FIRST_NAME: *
+          
+        
+
+        
+          LAST_NAME: *
+          
+        
+
+        
+          EMAIL: *
+          
+        
+
+        
+          PASSWORD: *
+          
+        
+
+        
+          CREATE_ACCOUNT
+        
+
+        
+          ALREADY HAVE AN ACCOUNT?
+          
+            LOGIN
+          
+        
+
+      
+    {% endform %}
+
+  
+
+
+```
 
