@@ -1,1 +1,37 @@
+```liquid
+
+  
+    █> INITIALIZING SUBNET_CULT.EXE...
+    █> LOADING DARKNET PROTOCOLS...
+    █> CONNECTION ESTABLISHED
+    █> WELCOME TO THE UNDERGROUND
+    █
+    █> BROWSE OUR COLLECTIONS BELOW
+  
+  
+  
+    
+      🖼️
+      POSTERS
+      WALL ART FOR REBELS
+    
+    
+      👕
+      CLOTHING
+      WEAR THE RESISTANCE
+    
+  
+
+
+{% if collections.frontpage.products.size > 0 %}
+
+  [ FEATURED PRODUCTS ]
+  
+    {% for product in collections.frontpage.products limit: 8 %}
+      {% render 'product-card', product: product %}
+    {% endfor %}
+  
+
+{% endif %}
+```
 
