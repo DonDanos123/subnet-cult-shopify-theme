@@ -1,1 +1,195 @@
+```liquid
+
+  
+  
+    
+    
+    
+      ACCOUNT
+       / 
+      ADDRESSES
+    
+
+    
+      MY_ADDRESSES
+    
+
+    
+    
+      
+        + ADD_NEW_ADDRESS
+      
+    
+
+    
+    
+      {% form 'customer_address', customer.new_address %}
+        
+          
+            [ NEW_ADDRESS ]
+          
+
+          
+            
+              FIRST_NAME: *
+              
+            
+
+            
+              LAST_NAME: *
+              
+            
+          
+
+          
+            COMPANY:
+            
+          
+
+          
+            ADDRESS: *
+            
+          
+
+          
+            APARTMENT, SUITE, ETC.:
+            
+          
+
+          
+            
+              CITY: *
+              
+            
+
+            
+              COUNTRY: *
+              
+                {{ all_country_option_tags }}
+              
+            
+          
+
+          
+            
+              PROVINCE: *
+              
+              
+            
+
+            
+              POSTAL CODE: *
+              
+            
+          
+
+          
+            PHONE:
+            
+          
+
+          
+            
+              
+              SET AS DEFAULT ADDRESS
+            
+          
+
+          
+            
+              SAVE_ADDRESS
+            
+            
+              CANCEL
+            
+          
+        
+      {% endform %}
+    
+
+    
+    {% if customer.addresses.size > 0 %}
+      
+        {% for address in customer.addresses %}
+          
+            
+            {% if address == customer.default_address %}
+              
+                DEFAULT
+              
+            {% endif %}
+
+            
+              {{ address | format_address }}
+            
+
+            
+              
+                EDIT
+              
+              
+                DELETE
+              
+            
+
+            
+            
+              {% form 'customer_address', address %}
+                
+                
+                  FIRST_NAME:
+                  
+                
+
+                
+                  LAST_NAME:
+                  
+                
+
+                
+                  UPDATE
+                
+                
+                  CANCEL
+                
+              {% endform %}
+            
+
+          
+        {% endfor %}
+      
+
+    {% else %}
+      
+        NO_ADDRESSES_SAVED
+        Add your first address to speed up checkout.
+      
+    {% endif %}
+
+  
+
+
+
+
+  function toggleNewAddress() {
+    const form = document.getElementById('addNewAddress');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function editAddress(id) {
+    document.getElementById('editAddress' + id).style.display = 'block';
+  }
+
+  function cancelEdit(id) {
+    document.getElementById('editAddress' + id).style.display = 'none';
+  }
+
+  function deleteAddress(id) {
+    if (confirm('Are you sure you want to delete this address?')) {
+      // Shopify's delete address functionality
+      Shopify.postLink('/account/addresses/' + id, {'parameters': {'_method': 'delete'}});
+    }
+  }
+
+```
 
