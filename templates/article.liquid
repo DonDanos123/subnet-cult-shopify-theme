@@ -1,1 +1,197 @@
+```liquid
+
+  
+  
+    
+    
+    
+      HOME
+       / 
+      {{ blog.title | upcase }}
+       / 
+      {{ article.title | upcase }}
+    
+
+    
+    
+      
+        {{ article.title }}
+      
+      
+      
+        {{ article.published_at | date: '%B %d, %Y' }} | BY {{ article.author | upcase }}
+        {% if article.tags.size > 0 %}
+          | TAGS: 
+          {% for tag in article.tags %}
+            {{ tag | upcase }}{% unless forloop.last %}, {% endunless %}
+          {% endfor %}
+        {% endif %}
+      
+    
+
+    
+    {% if article.image %}
+      
+        
+      
+    {% endif %}
+
+    
+    
+      {{ article.content }}
+    
+
+    
+    
+      
+      
+      
+        SHARE_THIS_ARTICLE:
+        
+          
+            TWITTER
+          
+          
+            FACEBOOK
+          
+          
+            LINKEDIN
+          
+        
+      
+
+      
+      
+        
+          ← BACK_TO_{{ blog.title | upcase }}
+        
+      
+
+    
+
+    
+    {% if blog.comments_enabled? %}
+      
+        
+        
+          [ COMMENTS ]
+        
+
+        {% if article.comments_count > 0 %}
+          {% paginate article.comments by 10 %}
+            {% for comment in article.comments %}
+              
+                
+                  {{ comment.author }} | {{ comment.created_at | date: '%B %d, %Y at %I:%M%p' }}
+                
+                {{ comment.content }}
+              
+            {% endfor %}
+
+            {% if paginate.pages > 1 %}
+              
+                {% if paginate.previous %}
+                  ← PREV
+                {% endif %}
+                {% if paginate.next %}
+                  NEXT →
+                {% endif %}
+              
+            {% endif %}
+          {% endpaginate %}
+        {% endif %}
+
+        
+        
+          LEAVE_A_COMMENT:
+          
+          {% form 'new_comment', article %}
+            {% if form.posted_successfully? %}
+              
+                {% if blog.moderated? %}
+                  Your comment has been submitted for approval.
+                {% else %}
+                  Your comment has been posted!
+                {% endif %}
+              
+            {% endif %}
+
+            {% if form.errors %}
+              
+                {{ form.errors | default_errors }}
+              
+            {% endif %}
+
+            
+              
+              
+                NAME: *
+                
+              
+
+              
+                EMAIL: *
+                
+              
+
+              
+                COMMENT: *
+                
+              
+
+              
+                POST_COMMENT
+              
+
+            
+          {% endform %}
+        
+
+      
+    {% endif %}
+
+  
+
+
+
+
+  .article-content img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--terminal-border);
+    margin: 2rem 0;
+  }
+
+  .article-content h2,
+  .article-content h3,
+  .article-content h4 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px var(--terminal-text);
+  }
+
+  .article-content p {
+    margin-bottom: 1rem;
+  }
+
+  .article-content ul,
+  .article-content ol {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .article-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .article-content a {
+    color: var(--terminal-text);
+    text-decoration: underline;
+  }
+
+  .article-content a:hover {
+    text-shadow: 0 0 10px var(--terminal-text);
+  }
+
+```
 
