@@ -1,1 +1,48 @@
+```liquid
+
+  
+    
+      {% if product.featured_image %}
+        
+      {% endif %}
+    
+    
+    
+      {{ product.title }}
+      
+        {{ product.price | money }}
+      
+      
+      
+        {{ product.description }}
+      
+      
+      
+        
+        
+        {% unless product.has_only_default_variant %}
+          
+            SELECT VARIANT:
+            
+              {% for variant in product.variants %}
+                
+                  {{ variant.title }} - {{ variant.price | money }}
+                
+              {% endfor %}
+            
+          
+        {% endunless %}
+        
+        
+          {% if product.available %}
+            [ ADD TO CART ]
+          {% else %}
+            [ SOLD OUT ]
+          {% endif %}
+        
+      
+    
+  
+
+```
 
