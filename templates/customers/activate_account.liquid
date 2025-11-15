@@ -1,1 +1,50 @@
+```liquid
+
+  
+  
+    
+    
+      ACTIVATE_ACCOUNT
+      
+        Create your password to activate your account.
+      
+    
+
+    {% form 'activate_customer_password' %}
+      
+      {% if form.errors %}
+        
+          {{ form.errors | default_errors }}
+        
+      {% endif %}
+
+      
+        
+        
+          PASSWORD: *
+          
+        
+
+        
+          CONFIRM_PASSWORD: *
+          
+        
+
+        
+          ACTIVATE_ACCOUNT
+        
+
+        
+          
+            CANCEL
+          
+        
+
+      
+    {% endform %}
+
+  
+
+
+```
 
