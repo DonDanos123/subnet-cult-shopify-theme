@@ -1,1 +1,146 @@
+```liquid
 
+
+
+  
+  
+  {{ page_title }}
+  
+  {{ content_for_header }}
+  
+  
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --terminal-green: #00ff41;
+      --terminal-bg: #0a0a0a;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: var(--terminal-bg);
+      color: var(--terminal-green);
+      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gift-card-container {
+      max-width: 600px;
+      width: 100%;
+      border: 2px solid var(--terminal-green);
+      padding: 3rem;
+      background: rgba(0, 0, 0, 0.9);
+      text-align: center;
+    }
+
+    .gift-card-logo {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px var(--terminal-green);
+      letter-spacing: 3px;
+    }
+
+    .gift-card-amount {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 30px var(--terminal-green);
+    }
+
+    .gift-card-code {
+      font-size: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid var(--terminal-green);
+      margin-bottom: 2rem;
+      background: rgba(0, 255, 65, 0.05);
+      letter-spacing: 3px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2rem;
+      border: 2px solid var(--terminal-green);
+      color: var(--terminal-green);
+      text-decoration: none;
+      transition: all 0.3s;
+      background: transparent;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+
+    .cta-button:hover {
+      background: var(--terminal-green);
+      color: var(--terminal-bg);
+      box-shadow: 0 0 20px var(--terminal-green);
+    }
+
+    @media print {
+      .no-print {
+        display: none;
+      }
+    }
+  
+
+
+  
+    
+    SUBNET_CULT
+
+    GIFT_CARD
+
+    {% if gift_card.enabled %}
+      {{ gift_card.balance | money }}
+
+      
+        {% if gift_card.expires_on %}
+          EXPIRES: {{ gift_card.expires_on | date: '%B %d, %Y' }}
+        {% else %}
+          NEVER_EXPIRES
+        {% endif %}
+      
+
+      
+        {{ gift_card.code | format_code }}
+      
+
+      
+        Use this code at checkout
+      
+
+      
+        
+          PRINT_GIFT_CARD
+        
+        
+          SHOP_NOW
+        
+      
+
+      {% if gift_card.pass_url %}
+        
+          
+            ADD_TO_APPLE_WALLET
+          
+        
+      {% endif %}
+
+    {% else %}
+      This gift card has been disabled.
+    {% endif %}
+
+    
+      Questions? Contact us at {{ shop.email }}
+    
+
+  
+
+
+```
