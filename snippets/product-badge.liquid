@@ -1,1 +1,12 @@
+```liquid
+{% if product.compare_at_price > product.price %}
+  
+    SALE
+  
+{% elsif product.available == false %}
+  
+    SOLD_OUT
+  
+{% endif %}
+```
 
