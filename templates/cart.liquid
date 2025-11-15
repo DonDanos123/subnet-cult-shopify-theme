@@ -1,73 +1,211 @@
-```liquid
+<div class="main-content">
+  
+  <h1 class="section-title">SHOPPING_CART</h1>
 
-  
-    [ SHOPPING CART ]
-  
-  
-  {% if cart.item_count == 0 %}
+  {% if cart.item_count > 0 %}
     
-      YOUR CART IS EMPTY
-      START YOUR REBELLION. ADD SOME ITEMS.
-      BROWSE PRODUCTS
-    
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      
+      <!-- Cart Items -->
+      <div>
+        <div style="border: 1px solid var(--terminal-border); background: rgba(0,255,65,0.05);">
+          <!-- Cart Header -->
+          <div style="display: grid; grid-template-columns: 80px 2fr 1fr 1fr 1fr 50px; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--terminal-border); font-weight: bold;">
+            <div>IMAGE</div>
+            <div>PRODUCT</div>
+            <div>PRICE</div>
+            <div>QTY</div>
+            <div>TOTAL</div>
+            <div></div>
+          </div>
+
+          <!-- Cart Items -->
+          {% for item in cart.items %}
+            <div class="cart-item" data-line="{{ forloop.index }}" style="display: grid; grid-template-columns: 80px 2fr 1fr 1fr 1fr 50px; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--terminal-border); align-items: center;">
+              
+              <!-- Image -->
+              <div>
+                {% if item.image %}
+                  <img src="{{ item.image | img_url: 'small' }}" alt="{{ item.title | escape }}" style="width: 100%; border: 1px solid var(--terminal-border);">
+                {% else %}
+                  <div style="width: 100%; aspect-ratio: 1; border: 1px solid var(--terminal-border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                    [NO_IMG]
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Product Info -->
+              <div>
+                <a href="{{ item.url }}" style="color: var(--terminal-text); text-decoration: none; font-weight: bold; display: block; margin-bottom: 0.5rem;">
+                  {{ item.product.title }}
+                </a>
+                {% unless item.variant.title contains 'Default' %}
+                  <div style="opacity: 0.7; font-size: 0.9rem;">
+                    {{ item.variant.title }}
+                  </div>
+                {% endunless %}
+              </div>
+
+              <!-- Price -->
+              <div>
+                {{ item.price | money }}
+              </div>
+
+              <!-- Quantity -->
+              <div>
+                <div style="display: flex; align-items: center; border: 1px solid var(--terminal-border);">
+                  <button onclick="updateQuantity({{ forloop.index }}, {{ item.quantity | minus: 1 }})" style="background: transparent; border: none; color: var(--terminal-text); padding: 0.5rem; cursor: pointer; font-size: 1.2rem;">-</button>
+                  <input type="number" value="{{ item.quantity }}" min="0" onchange="updateQuantity({{ forloop.index }}, this.value)" style="width: 60px; text-align: center; background: var(--terminal-bg); color: var(--terminal-text); border: none; font-family: 'Courier New', monospace;">
+                  <button onclick="updateQuantity({{ forloop.index }}, {{ item.quantity | plus: 1 }})" style="background: transparent; border: none; color: var(--terminal-text); padding: 0.5rem; cursor: pointer; font-size: 1.2rem;">+</button>
+                </div>
+              </div>
+
+              <!-- Line Total -->
+              <div style="font-weight: bold;">
+                {{ item.line_price | money }}
+              </div>
+
+              <!-- Remove -->
+              <div>
+                <button onclick="removeItem({{ forloop.index }})" style="background: transparent; border: 1px solid var(--terminal-border); color: var(--terminal-text); padding: 0.5rem; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#ff0000'; this.style.borderColor='#ff0000'" onmouseout="this.style.background='transparent'; this.style.borderColor='var(--terminal-border)'">
+                  X
+                </button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Cart Note -->
+        <div style="margin-top: 2rem; border: 1px solid var(--terminal-border); padding: 1.5rem; background: rgba(0,255,65,0.05);">
+          <label for="cartNote" style="display: block; margin-bottom: 0.5rem; opacity: 0.7;">
+            ORDER_NOTES:
+          </label>
+          <textarea id="cartNote" name="note" style="width: 100%; min-height: 100px; background: var(--terminal-bg); color: var(--terminal-text); border: 1px solid var(--terminal-border); padding: 0.8rem; font-family: 'Courier New', monospace; resize: vertical;">{{ cart.note }}</textarea>
+        </div>
+      </div>
+
+      <!-- Cart Summary -->
+      <div>
+        <div style="border: 2px solid var(--terminal-border); padding: 1.5rem; background: rgba(0,255,65,0.05); position: sticky; top: 100px;">
+          <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; text-align: center;">[ ORDER_SUMMARY ]</h2>
+          
+          <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--terminal-border);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="opacity: 0.7;">SUBTOTAL:</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="opacity: 0.7;">SHIPPING:</span>
+              <span>CALCULATED_AT_CHECKOUT</span>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: bold; margin-bottom: 2rem;">
+            <span>TOTAL:</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+
+          <a href="/checkout" class="cta-button" style="width: 100%; text-align: center; display: block; padding: 1.2rem; background: var(--terminal-text); color: var(--terminal-bg); margin-bottom: 1rem; text-decoration: none;">
+            PROCEED_TO_CHECKOUT
+          </a>
+
+          <a href="/collections/all" style="display: block; text-align: center; color: var(--terminal-text); text-decoration: none; opacity: 0.7; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+            ← CONTINUE_SHOPPING
+          </a>
+
+          <!-- Trust Badges -->
+          <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--terminal-border); text-align: center; opacity: 0.7; font-size: 0.9rem;">
+            <p style="margin-bottom: 0.5rem;">✓ SECURE_CHECKOUT</p>
+            <p style="margin-bottom: 0.5rem;">✓ FREE_SHIPPING_OVER_$50</p>
+            <p>✓ 30_DAY_RETURNS</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   {% else %}
     
-      {% for item in cart.items %}
-        
-          
-            {% if item.image %}
-              
-            {% endif %}
-            
-              {{ item.product.title }}
-              {{ item.variant.title }}
-              {{ item.price | money }}
-            
-          
-          
-          
-            
-              -
-              {{ item.quantity }}
-              +
-            
-            {{ item.line_price | money }}
-            ✕
-          
-        
-      {% endfor %}
-      
-      
-        
-          TOTAL:
-          {{ cart.total_price | money }}
-        
-        
-          [ PROCEED TO CHECKOUT ]
-        
-      
-    
+    <!-- Empty Cart -->
+    <div style="text-align: center; padding: 4rem; border: 2px solid var(--terminal-border); background: rgba(0,255,65,0.05);">
+      <p style="font-size: 2rem; margin-bottom: 1rem;">CART_EMPTY</p>
+      <p style="opacity: 0.7; margin-bottom: 2rem;">Your shopping cart is currently empty.</p>
+      <a href="/collections/all" class="cta-button">START_SHOPPING</a>
+    </div>
+
   {% endif %}
 
+</div>
 
-
-document.querySelectorAll('.quantity-btn').forEach(button => {
-  button.addEventListener('click', function() {
-    const key = this.dataset.id;
-    const change = parseInt(this.dataset.change);
-    const currentQty = parseInt(this.parentElement.querySelector('span').textContent);
-    const newQty = currentQty + change;
+<script>
+  function updateQuantity(line, quantity) {
+    quantity = parseInt(quantity);
+    if (quantity < 0) return;
     
-    if (newQty >= 0) {
-      fetch('/cart/change.js', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({id: key, quantity: newQty})
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line: line,
+        quantity: quantity
       })
-      .then(() => location.reload());
+    })
+    .then(response => response.json())
+    .then(data => {
+      location.reload();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  function removeItem(line) {
+    updateQuantity(line, 0);
+  }
+
+  // Update cart note
+  const cartNote = document.getElementById('cartNote');
+  if (cartNote) {
+    let timeout;
+    cartNote.addEventListener('input', function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        fetch('/cart/update.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            note: this.value
+          })
+        });
+      }, 1000);
+    });
+  }
+</script>
+
+<style>
+  @media (max-width: 968px) {
+    .main-content > div > div:first-child {
+      grid-template-columns: 1fr !important;
     }
-  });
-});
 
-```
+    .cart-item {
+      grid-template-columns: 60px 1fr !important;
+      gap: 0.5rem !important;
+    }
 
+    .cart-item > div:nth-child(3),
+    .cart-item > div:nth-child(4),
+    .cart-item > div:nth-child(5) {
+      grid-column: 2;
+    }
+
+    .cart-item > div:nth-child(6) {
+      grid-column: 2;
+      text-align: right;
+    }
+  }
+</style>
