@@ -1,1 +1,41 @@
+```liquid
 
+
+
+  
+  
+  {{ page_title }} - {{ shop.name }}
+  
+  {{ content_for_header }}
+  
+  
+    :root {
+      --terminal-green: #00ff41;
+      --terminal-bg: #0a0a0a;
+    }
+    
+    body {
+      font-family: 'Courier New', monospace;
+      background: var(--terminal-bg);
+      color: var(--terminal-green);
+    }
+    
+    .checkout-logo {
+      text-align: center;
+      padding: 2rem;
+      border-bottom: 2px solid var(--terminal-green);
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+  
+
+
+  SUBNET_CULT
+  
+  {{ content_for_layout }}
+  
+  {{ tracking_code }}
+
+
+```
