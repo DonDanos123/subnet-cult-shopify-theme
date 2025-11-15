@@ -1,37 +1,114 @@
-```liquid
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="glitch">SUBNET_CULT<span class="terminal-cursor">_</span></h1>
+    <p class="hero-subtitle">> DIGITAL_PROPAGANDA_FOR_THE_CONNECTED_GENERATION</p>
+    <a href="/collections/all" class="cta-button">ENTER_SYSTEM</a>
+  </div>
+</section>
 
+<!-- Main Content -->
+<div class="main-content">
   
-    █> INITIALIZING SUBNET_CULT.EXE...
-    █> LOADING DARKNET PROTOCOLS...
-    █> CONNECTION ESTABLISHED
-    █> WELCOME TO THE UNDERGROUND
-    █
-    █> BROWSE OUR COLLECTIONS BELOW
-  
-  
-  
-    
-      🖼️
-      POSTERS
-      WALL ART FOR REBELS
-    
-    
-      👕
-      CLOTHING
-      WEAR THE RESISTANCE
-    
-  
+  <!-- Featured Posters -->
+  <section>
+    <h2 class="section-title">FEATURED_POSTERS</h2>
+    <div class="product-grid">
+      {% for product in collections['posters'].products limit: 4 %}
+        <div class="product-card">
+          <a href="{{ product.url }}">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title | escape }}" class="product-image">
+            {% else %}
+              <div class="product-image" style="background: rgba(0,255,65,0.1); display: flex; align-items: center; justify-content: center;">
+                [NO_IMAGE]
+              </div>
+            {% endif %}
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-price">{{ product.price | money }}</p>
+          </a>
+          <form action="/cart/add" method="post">
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+            <button type="submit" class="cta-button" style="width: 100%;">ADD_TO_CART</button>
+          </form>
+        </div>
+      {% else %}
+        <p style="grid-column: 1/-1; text-align: center; opacity: 0.7;">NO_POSTERS_FOUND</p>
+      {% endfor %}
+    </div>
+  </section>
 
+  <!-- Featured Apparel -->
+  <section>
+    <h2 class="section-title">FEATURED_APPAREL</h2>
+    <div class="product-grid">
+      {% for product in collections['apparel'].products limit: 4 %}
+        <div class="product-card">
+          <a href="{{ product.url }}">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title | escape }}" class="product-image">
+            {% else %}
+              <div class="product-image" style="background: rgba(0,255,65,0.1); display: flex; align-items: center; justify-content: center;">
+                [NO_IMAGE]
+              </div>
+            {% endif %}
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-price">{{ product.price | money }}</p>
+          </a>
+          <form action="/cart/add" method="post">
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+            <button type="submit" class="cta-button" style="width: 100%;">ADD_TO_CART</button>
+          </form>
+        </div>
+      {% else %}
+        <p style="grid-column: 1/-1; text-align: center; opacity: 0.7;">NO_APPAREL_FOUND</p>
+      {% endfor %}
+    </div>
+  </section>
 
-{% if collections.frontpage.products.size > 0 %}
+  <!-- Featured Accessories -->
+  <section>
+    <h2 class="section-title">FEATURED_ACCESSORIES</h2>
+    <div class="product-grid">
+      {% for product in collections['accessories'].products limit: 4 %}
+        <div class="product-card">
+          <a href="{{ product.url }}">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title | escape }}" class="product-image">
+            {% else %}
+              <div class="product-image" style="background: rgba(0,255,65,0.1); display: flex; align-items: center; justify-content: center;">
+                [NO_IMAGE]
+              </div>
+            {% endif %}
+            <h3 class="product-title">{{ product.title }}</h3>
+            <p class="product-price">{{ product.price | money }}</p>
+          </a>
+          <form action="/cart/add" method="post">
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+            <button type="submit" class="cta-button" style="width: 100%;">ADD_TO_CART</button>
+          </form>
+        </div>
+      {% else %}
+        <p style="grid-column: 1/-1; text-align: center; opacity: 0.7;">NO_ACCESSORIES_FOUND</p>
+      {% endfor %}
+    </div>
+  </section>
 
-  [ FEATURED PRODUCTS ]
-  
-    {% for product in collections.frontpage.products limit: 8 %}
-      {% render 'product-card', product: product %}
-    {% endfor %}
-  
+  <!-- About Section -->
+  <section style="text-align: center; padding: 4rem 0; border-top: 1px solid var(--terminal-border); margin-top: 4rem;">
+    <h2 class="section-title">ABOUT_SUBNET_CULT</h2>
+    <p style="max-width: 800px; margin: 0 auto; opacity: 0.9; line-height: 1.8;">
+      > SUBNET_CULT IS A DIGITAL COLLECTIVE CREATING VISUAL PROPAGANDA FOR THE CYBERPUNK GENERATION.<br>
+      > OUR DESIGNS MERGE TERMINAL AESTHETICS WITH CONTEMPORARY STREETWEAR.<br>
+      > JOIN THE NETWORK. WEAR THE CODE.
+    </p>
+  </section>
 
-{% endif %}
-```
+</div>
 
+<style>
+  /* Add some extra styling for the homepage */
+  section {
+    margin-bottom: 4rem;
+  }
+</style>
