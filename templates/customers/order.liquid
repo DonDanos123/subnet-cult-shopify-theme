@@ -1,1 +1,144 @@
+```liquid
+<div class="main-content">
+  
+  <div style="max-width: 1000px; margin: 0 auto;">
+    
+    <!-- Breadcrumb -->
+    <div style="margin-bottom: 2rem; opacity: 0.7;">
+      <a href="/account" style="color: var(--terminal-text); text-decoration: none;">ACCOUNT</a>
+      <span> / </span>
+      <span>ORDER #{{ order.name }}</span>
+    </div>
 
+    <header style="text-align: center; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid var(--terminal-border);">
+      <h1 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 0 0 10px var(--terminal-text);">
+        ORDER #{{ order.name }}
+      </h1>
+      <p style="opacity: 0.7;">
+        Placed on {{ order.created_at | date: '%B %d, %Y at %I:%M%p' }}
+      </p>
+    </header>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 4rem;">
+      
+      <!-- Order Items -->
+      <div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; text-shadow: 0 0 10px var(--terminal-text);">
+          [ ORDER_ITEMS ]
+        </h2>
+
+        <div style="border: 2px solid var(--terminal-border); background: rgba(0, 255, 65, 0.05);">
+          {% for line_item in order.line_items %}
+            <div style="display: grid; grid-template-columns: 80px 2fr 1fr 1fr; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--terminal-border); align-items: center;">
+              
+              <div>
+                {% if line_item.image %}
+                  <img src="{{ line_item.image | img_url: 'small' }}" alt="{{ line_item.title | escape }}" style="width: 100%; border: 1px solid var(--terminal-border);">
+                {% else %}
+                  <div style="width: 100%; aspect-ratio: 1; border: 1px solid var(--terminal-border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                    [NO_IMG]
+                  </div>
+                {% endif %}
+              </div>
+
+              <div>
+                <p style="font-weight: bold; margin-bottom: 0.25rem;">{{ line_item.title }}</p>
+                {% if line_item.variant.title != 'Default Title' %}
+                  <p style="opacity: 0.7; font-size: 0.9rem;">{{ line_item.variant.title }}</p>
+                {% endif %}
+              </div>
+
+              <div style="opacity: 0.8;">
+                QTY: {{ line_item.quantity }}
+              </div>
+
+              <div style="text-align: right; font-weight: bold;">
+                {{ line_item.final_line_price | money }}
+              </div>
+
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; text-shadow: 0 0 10px var(--terminal-text);">
+          [ SUMMARY ]
+        </h2>
+
+        <div style="border: 2px solid var(--terminal-border); padding: 1.5rem; background: rgba(0, 255, 65, 0.05); margin-bottom: 2rem;">
+          
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="opacity: 0.7;">SUBTOTAL:</span>
+            <span>{{ order.line_items_subtotal_price | money }}</span>
+          </div>
+
+          {% for discount in order.discounts %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #00ff00;">
+              <span>DISCOUNT ({{ discount.code }}):</span>
+              <span>-{{ discount.savings | money }}</span>
+            </div>
+          {% endfor %}
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="opacity: 0.7;">SHIPPING:</span>
+            <span>{{ order.shipping_price | money }}</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--terminal-border);">
+            <span style="opacity: 0.7;">TAX:</span>
+            <span>{{ order.tax_price | money }}</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: bold;">
+            <span>TOTAL:</span>
+            <span>{{ order.total_price | money }}</span>
+          </div>
+
+        </div>
+
+        <!-- Status -->
+        <div style="border: 2px solid var(--terminal-border); padding: 1.5rem; background: rgba(0, 255, 65, 0.05); margin-bottom: 2rem; text-align: center;">
+          <p style="opacity: 0.7; margin-bottom: 0.5rem;">STATUS:</p>
+          <p style="font-size: 1.2rem; font-weight: bold;">{{ order.financial_status_label | upcase }}</p>
+        </div>
+
+        <!-- Addresses -->
+        <div style="border: 2px solid var(--terminal-border); padding: 1.5rem; background: rgba(0, 255, 65, 0.05);">
+          <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">SHIPPING_ADDRESS:</h3>
+          <div style="opacity: 0.9; line-height: 1.6;">
+            {{ order.shipping_address | format_address }}
+          </div>
+
+          {% if order.billing_address %}
+            <h3 style="font-size: 1.2rem; margin: 1.5rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--terminal-border);">BILLING_ADDRESS:</h3>
+            <div style="opacity: 0.9; line-height: 1.6;">
+              {{ order.billing_address | format_address }}
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Back Button -->
+    <div style="text-align: center;">
+      <a href="/account" class="cta-button" style="display: inline-block; padding: 1rem 2rem;">
+        ← BACK_TO_ACCOUNT
+      </a>
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+  @media (max-width: 968px) {
+    .main-content > div > div:nth-child(3) {
+      grid-template-columns: 1fr !important;
+    }
+
+    .main-content > div > div > div > div {
+      grid-template-
